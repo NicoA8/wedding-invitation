@@ -1,0 +1,14 @@
+node_modules
+*.log
+dist
+.DS_Store
+.vscode
+.output
+.nuxt
+.env
+
+package-lock.json
+
+.netlify
+
+node-jiti

@@ -1,0 +1,11 @@
+@import "~/assets/font/fonts.css";
+
+body {
+    font-family: var(--font-default);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+
+    * {
+        font-family: var(--font-default);
+    }
+}
