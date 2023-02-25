@@ -1,185 +1,116 @@
 <template>
-    <div class="main_page">
-        <div class="hero">
-            <img class="name bride" src="../assets/img/ade.svg" alt="name" />
-            <img
-                class="and"
-                src="../assets/img/square.svg"
-                alt="traditional square"
-            />
-            <img class="name groom" src="../assets/img/alex.svg" alt="name" />
-        </div>
-        <img
-            class="photo"
-            src="../assets/img/photo.png"
-            alt="bride and groom"
-        />
-        <nav class="menu">
-            <ul>
-                <li>
-                    <a href="#noi">NOI</a>
-                </li>
-                <li class="dot"></li>
-                <li>
-                    <a href="#detalii">DETALII</a>
-                </li>
-                <li class="dot"></li>
-                <li>
-                    <a href="#confirmare">CONFIRMARE</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+    <main class="main">
+        <PageHero />
+        <PageUs :countdown="countdown" />
+        <PageDetails />
+        <PageConfirmation :date-passed="countdown.datePassed" />
+        <ScrollToTop />
+    </main>
+    <Particles />
 </template>
 
+<script setup lang="ts">
+const countDownDate = new Date("July 29, 2023 15:00:00").getTime();
+
+const countdown = reactive({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    datePassed: false,
+});
+
+setInterval(() => {
+    const present = new Date().getTime();
+
+    const distance = countDownDate - present;
+    countdown.days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    countdown.hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    countdown.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (distance <= 0) {
+        countdown.datePassed = true;
+    }
+}, 1000);
+</script>
+
 <style scoped lang="scss">
-.main_page {
+.main {
+    --xs-box: 20rem;
+    --s-box: 25rem;
+    --m-box: 33rem;
+    --l-box: 45rem;
+
     position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: thin;
-    scrollbar-color: var(--gold) transparent;
-
-    &::-webkit-scrollbar {
-        width: 0.5rem;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: var(--gold);
-    }
-}
-
-.main_page :deep(> *) {
-    scroll-snap-align: start end;
-    scroll-snap-stop: always;
-}
-
-.hero {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
+    width: var(--xs-box);
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    overflow-y: clip;
+    background: rgba(#ffffff, 0.7);
 
     &::before,
     &::after {
         content: "";
+        width: 2.8rem;
+        height: calc(400vh + 30rem);
         position: absolute;
         z-index: 1;
         inset-block-start: -1rem;
+        background-color: var(--gold);
+        mask-size: 100%;
+        mask-repeat: no-repeat;
     }
 
     &::before {
-        width: 3.125rem;
-        height: 252.25rem;
-        background-color: var(--gold);
         inset-inline-start: 0;
-        mask: url("../assets/img/full-line.svg") no-repeat 50% 50%;
+        mask-image: url("https://riowxqprdeqaxhkjcsax.supabase.co/storage/v1/object/public/photos/full-line.svg");
     }
 
     &::after {
-        width: 3.125rem;
-        height: 252.25rem;
         inset-inline-end: 0;
-        mask: url("../assets/img/part-line.svg") no-repeat 50% 50%;
-        background-color: var(--gold);
+        mask-image: url("https://riowxqprdeqaxhkjcsax.supabase.co/storage/v1/object/public/photos/part-line.svg");
     }
 }
 
-.and {
-    width: 1.375rem;
-    height: auto;
-    position: absolute;
-    inset-block-start: 17.5%;
-    inset-inline-start: 10rem;
-    z-index: 5;
+.main :deep(> *) {
+    scroll-snap-align: start end;
+    scroll-snap-stop: always;
 }
 
-.photo {
-    width: 13rem;
-    height: auto;
-    position: absolute;
-    inset-block-start: 50%;
-    inset-inline-end: 0;
-    transform: translate(-5%, -45%);
-}
+@media (min-width: 400px) {
+    .main {
+        width: var(--s-box);
 
-.name {
-    width: 18rem;
-    height: auto;
-    position: absolute;
-    inset-inline-start: 0;
-    z-index: 5;
-}
-
-.bride {
-    inset-block-start: 12%;
-    transform: translate(3%, -40%);
-}
-
-.groom {
-    inset-block-start: 22%;
-    transform: translate(10%, -30%);
-}
-
-.menu {
-    position: absolute;
-    inset-block-end: 1.5rem;
-    inset-inline-end: 3.5rem;
-
-    ul {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        align-items: end;
-        gap: 0.5rem;
-
-        li {
-            letter-spacing: 0.2rem;
-            text-decoration: none;
+        &::before,
+        &::after {
+            width: 4rem;
         }
     }
 }
 
-.dot {
-    width: 4px;
-    height: 4px;
-    background-color: var(--gold);
-}
+@media (min-width: 560px) {
+    .main {
+        width: var(--m-box);
 
-@media (min-height: 650px) {
-    .photo {
-        width: 16rem;
-    }
-}
-
-@media (min-height: 750px) and (min-width: 400px) {
-    .photo {
-        width: 19rem;
-    }
-    .menu {
-        inset-block-end: 2rem;
+        &::before,
+        &::after {
+            width: 4.5rem;
+        }
     }
 }
 
-@media (min-height: 900px) and (min-width: 400px) {
-    .photo {
-        width: 20rem;
-        transform: translate(-4%, -45%);
-    }
+@media (min-width: 800px) {
+    .main {
+        width: var(--l-box);
 
-    .menu {
-        inset-block-end: 4rem;
-    }
-    .name {
-        width: 19rem;
-        height: auto;
+        &::before,
+        &::after {
+            width: 5rem;
+        }
     }
 }
 </style>

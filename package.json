@@ -1,17 +1,21 @@
 {
-  "private": true,
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "devDependencies": {
-    "@nuxtjs/supabase": "^0.3.0",
-    "nuxt": "^3.1.0"
-  },
-  "dependencies": {
-    "sass": "^1.58.1"
-  }
+    "private": true,
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "devDependencies": {
+        "@nuxtjs/supabase": "^0.3.0",
+        "nuxt": "^3.1.0"
+    },
+    "dependencies": {
+        "@vueuse/core": "^9.13.0",
+        "nuxt-icons": "^3.1.0",
+        "sass": "^1.58.1",
+        "tsparticles": "^2.9.3",
+        "vue3-particles": "^2.9.3"
+    }
 }

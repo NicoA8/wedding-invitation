@@ -1,7 +1,5 @@
-@use "../../font/fonts.css" as *;
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond&display=swap");
 
 :root {
-    --font-default: "CormorantGaramond", serif;
-    --font-fancy: "MonthGlade", display;
+    --font-default: "Cormorant Garamond", serif;
 }
-

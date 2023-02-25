@@ -1,97 +1,152 @@
 <template>
-  <form ref="form" @submit.prevent="send">
-    <div class="name_message_rsvp">
-      <label>
-        Nume și prenume:
-        <input type="text" name="user_name" />
-      </label>
+    <div v-if="selected" :class="$style.option_form">
+        <FormBox label="Nume și prenume:">
+            <template #input>
+                <input type="text" v-model="guest_name" required />
+            </template>
+        </FormBox>
+        <FormBox v-if="partner" label="Nume și prenume partener:">
+            <template #input>
+                <input type="text" v-model="partner_name" />
+            </template>
+        </FormBox>
+        <FormBox label="Vă rugăm alegeți tipul de meniu:">
+            <template #simple>
+                <Checkbox
+                    title="Meniu clasic"
+                    :checked="menuOne"
+                    @check="(event) => pickOne(event)"
+                />
+                <Checkbox
+                    title="Meniu vegetarian"
+                    :checked="menuTwo"
+                    @check="(event) => pickTwo(event)"
+                />
+            </template>
+        </FormBox>
+        <FormBox label="Mai doriți să ne transmiteți ceva?">
+            <template #input>
+                <textarea name="message" v-model="message"></textarea>
+            </template>
+        </FormBox>
+        <p :class="$style.fail" v-if="incomplete">
+            Nu ați completat toate câmpurile, încercați din nou.
+        </p>
+        <div :class="$style.button_box">
+            <RsvpButton label="Pot participa" @handleClick="accept" />
+            <RsvpButton label="Nu pot participa" @handleClick="decline" />
+        </div>
     </div>
-    <button v-if="rsvp" @click="confirmForm" type="button">
-      Pot participa
-    </button>
-    <button v-if="rsvp" @click="declineForm" type="button">
-      Nu pot participa
-    </button>
-    <div v-if="confirm">
-      <h3>Câte persoane?</h3>
-      <label>
-        <input
-          type="radio"
-          name="no_guests"
-          value="O persoană"
-          @click="confirmOne"
-        />
-        O persoană
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="no_guests"
-          value="Două persoane"
-          @click="confirmTwo"
-        />
-        Două persoane
-      </label>
-      <div v-if="one_rsvp" class="one_guest">
-        <Menu />
-        <input type="submit" name="user_rsvp" value="Pot participa" />
-      </div>
-
-      <div v-if="two_rsvp" class="two_guests">
-        <label>
-          Nume și prenume partener:
-          <input type="text" name="user_name" />
-        </label>
-        <Menu />
-        <Message />
-        <input type="submit" name="user_rsvp" value="Pot participa" />
-      </div>
-    </div>
-    <div v-if="decline">
-      <Message />
-      <input type="submit" name="user_rsvp" value="Nu pot participa" />
-    </div>
-  </form>
 </template>
 
 <script setup lang="ts">
-import Menu from "@/components/Menu.vue";
-import Message from "@/components/Message.vue";
+defineProps<{
+    selected: boolean;
+    partner: boolean;
+}>();
 
-// const supabase = useSupabaseClient();
+const emit = defineEmits(["accept", "decline"]);
 
-// const data = await supabase.from("guests").select("*");
-// console.log(data); 
-
-const form = ref(null);
-const one_rsvp = ref(false);
-const two_rsvp = ref(false);
-const rsvp = ref(true);
+// Data
+const guest_name = ref("");
+const partner_name = ref("");
+const message = ref("");
+const menu = ref("");
 const confirm = ref(false);
-const decline = ref(false);
 
-const send = () => {
-  console.log("sent RSVP");
-};
-const confirmForm = () => {
-  confirm.value = true;
-  rsvp.value = false;
-};
+const incomplete = ref(false);
 
-const declineForm = () => {
-  decline.value = true;
-  rsvp.value = false;
+// Menu
+const menuOne = ref(false);
+const menuTwo = ref(false);
+
+const pickOne = (event: Event) => {
+    menuOne.value = true;
+    menuTwo.value = false;
+    menu.value = (event.target as HTMLInputElement).value;
 };
 
-const confirmOne = () => {
-  one_rsvp.value = true;
-  two_rsvp.value = false;
+const pickTwo = (event: Event) => {
+    menuOne.value = false;
+    menuTwo.value = true;
+    menu.value = (event.target as HTMLInputElement).value;
 };
 
-const confirmTwo = () => {
-  two_rsvp.value = true;
-  one_rsvp.value = false;
+// RSVP
+const accept = () => {
+    confirm.value = true;
+    if (!guest_name.value || !menu.value) {
+        incomplete.value = true;
+        return;
+    }
+    const newGuest = {
+        guest_name: guest_name.value,
+        partner_name: partner_name.value,
+        message: message.value,
+        menu: menu.value,
+        confirm: confirm.value,
+    };
+    guest_name.value = "";
+    partner_name.value = "";
+    menu.value = "";
+    message.value = "";
+    partner_name.value = "";
+    incomplete.value = false;
+
+    emit("accept", newGuest, incomplete.value);
 };
+
+const decline = () => {
+    confirm.value = false;
+    if (!guest_name.value || !menu.value) {
+        incomplete.value = true;
+        return;
+    }
+    const newGuest = {
+        guest_name: guest_name.value,
+        partner_name: partner_name.value,
+        message: message.value,
+        menu: menu.value,
+        confirm: confirm.value,
+    };
+    guest_name.value = "";
+    partner_name.value = "";
+    menu.value = "";
+    incomplete.value = false;
+    message.value = "";
+    partner_name.value = "";
+
+    emit("decline", newGuest, incomplete.value);
+};
+
+onMounted(() => {
+    menuOne.value = false;
+    menuTwo.value = false;
+    guest_name.value = "";
+    partner_name.value = "";
+    message.value = "";
+    partner_name.value = "";
+    incomplete.value = false;
+});
 </script>
 
-<style></style>
+<style lang="scss" module>
+.option_form {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+}
+
+.fail {
+    width: 12rem;
+    color: var(--error-color);
+}
+
+.button_box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+</style>

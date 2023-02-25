@@ -1,14 +1,9 @@
 node_modules
 *.log
 dist
-.DS_Store
 .vscode
 .output
 .nuxt
+.env.local
 .env
-
 package-lock.json
-
-.netlify
-
-node-jiti

@@ -1,6 +1,5 @@
 import { defineNuxtConfig } from "nuxt/config";
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     app: {
         head: {
@@ -12,16 +11,16 @@ export default defineNuxtConfig({
                     content: "width=device-width, initial-scale=1",
                 },
                 {
-                    hid: "description",
                     name: "description",
                     content: "Invitație nuntă Adelina și Alexandru.",
                 },
             ],
-            link: [
-                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-            ],
-        }
+            htmlAttrs: {
+                lang: "en",
+            },
+            link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+        },
     },
-    modules: ["@nuxtjs/supabase"],
-    ssr: true,
-})
+    modules: ["@nuxtjs/supabase", "nuxt-icons"],
+    ssr: false,
+});
